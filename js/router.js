@@ -1,7 +1,7 @@
 let pageUrls = {
-    about: '/?about',
-    contact: '/?contact',
-    gallery: '/?gallery'
+    about: '/index.html?about',
+    contact: '/index.html?contact',
+    gallery: '/index.html?gallery'
 };
 
 function OnStartUp() {
