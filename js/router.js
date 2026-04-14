@@ -1,7 +1,7 @@
 let pageUrls = {
-    about: '/index.html?about',
-    contact: '/index.html?contact',
-    gallery: '/index.html?gallery'
+    about: '/?about',
+    contact: '/?contact',
+    gallery: '/?gallery'
 };
 
 function OnStartUp() {
@@ -11,21 +11,21 @@ function OnStartUp() {
 OnStartUp();
 
 document.querySelector('#about-link').addEventListener('click', (event) => {
-    let stateObj = { page: 'about' };
+    let stateObj = { page:'about' };
     document.title = 'About';
     history.pushState(stateObj, "about", "?about");
     RenderAboutPage();
 });
 
 document.querySelector('#contact-link').addEventListener('click', (event) => {
-    let stateObj = { page: 'contact' };
+    let stateObj = { page:'contact' };
     document.title = 'Contact';
     history.pushState(stateObj, "contact", "?contact");
     RenderContactPage();
 });
 
 document.querySelector('#gallery-link').addEventListener('click', () =>{
-    let stateObj = { page: 'gallery'};
+    let stateObj = { page:'gallery'};
     document.title = 'Gallery';
     history.pushState(stateObj, "gallery", "?gallery");
     RenderGalleryPage();
@@ -40,16 +40,23 @@ function RenderAboutPage() {
 
 function RenderContactPage() {
     document.querySelector('main').innerHTML = `
-    <h1 class="title">Contact with me</h1>
-    <form id="contact-form">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    <label for="message">Message:</label>
-    <textarea id="message" name="message" required></textarea>
-    <button type="submit">Send</button>
-    </form>`;
+        <h1 class="title">Contact with me</h1>
+
+        <form id="contact-form">
+            <label>Imię:</label>
+            <input type="text" id="name" required>
+
+            <label>Email:</label>
+            <input type="email" id="email" required>
+
+            <label>Wiadomość:</label>
+            <textarea id="message" required></textarea>
+
+            <div class="g-recaptcha" data-sitekey="TWOJ_SITE_KEY"></div>
+
+            <button type="submit">Wyślij</button>
+        </form>
+    `;
 
     document.getElementById('contact-form').addEventListener('submit', (event) => {
         event.preventDefault();
@@ -93,7 +100,7 @@ function RenderGalleryPage(){
 }
 
 function lazyLoad() {
-    const images = document.querySelectorAll('.lazy');
+    const images = document.querySelectorAll('img');
 
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
@@ -104,6 +111,10 @@ function lazyLoad() {
                     .then(res => res.blob())
                     .then(blob => {
                         img.src = URL.createObjectURL(blob);
+
+                        img.onload = () => {
+                            img.classList.add('loaded');
+                        };
                     });
                 
                     obs.unobserve(img);
@@ -111,6 +122,7 @@ function lazyLoad() {
         });
     });
 
+    
     images.forEach(img => observer.observe(img));
 }
 
@@ -128,10 +140,13 @@ function modalSetup() {
     });
 
     closeBtn.onclick = () => modal.style.display = "none";
+    
     modal.onclick = (e) => {
         if (e.target === modal) modal.style.display = "none";
     };
 }
+
+window.onpopstate = popStateHandler;
 
 function popStateHandler() {
     let loc = window.location.href.toString().split(window.location.host)[1];
@@ -140,8 +155,6 @@ function popStateHandler() {
     if (loc === pageUrls.about) { RenderAboutPage(); }
     if (loc === pageUrls.gallery) { RenderGalleryPage();}
 }
-
-window.onpopstate = popStateHandler;
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
