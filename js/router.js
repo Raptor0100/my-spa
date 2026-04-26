@@ -1,7 +1,7 @@
 let pageUrls = {
-    about: '/my-spa/?about',
-    contact: '/my-spa/?contact',
-    gallery: '/my-spa/?gallery'
+    about: '/index.html?about',
+    contact: '/index.html?contact',
+    gallery: '/index.html?gallery'
 };
 
 function OnStartUp() {
@@ -38,29 +38,48 @@ function RenderAboutPage() {
 
 }
 
-function RenderContactPage() {
-    document.querySelector('main').innerHTML = `
-        <h1 class="title">Contact with me</h1>
+function RenderContactPage() {      
+    document.querySelector('main').innerHTML = ` 
+        <h1 class="title">Contact with me</h1> 
+        <form id="contact-form"> 
+            <label for="name">Name:</label> 
+            <input type="text" id="name" name="name" required> 
 
-        <form id="contact-form">
-            <label>Imię:</label>
-            <input type="text" id="name" required>
+            <label for="email">Email:</label> 
+            <input type="email" id="email" name="email" required> 
 
-            <label>Email:</label>
-            <input type="email" id="email" required>
+            <label for="message">Message:</label> 
+            <textarea id="message" name="message" required></textarea> 
 
-            <label>Wiadomość:</label>
-            <textarea id="message" required></textarea>
+            <div class="g-recaptcha" data-sitekey="6LcAoMssAAAAAPMwuAz3VVt1tBYv8SCGkegQK-ZG"></div>
 
-            <div class="g-recaptcha" data-sitekey="TWOJ_SITE_KEY"></div>
+            <button type="submit">Send</button> 
+        </form>`; 
 
-            <button type="submit">Wyślij</button>
-        </form>
-    `;
+    document.getElementById('contact-form').addEventListener('submit', (event) => { 
+        event.preventDefault(); 
 
-    document.getElementById('contact-form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        alert('Form submitted!');
+        let name = document.getElementById('name').value.trim();
+        let email = document.getElementById('email').value.trim();
+        let message = document.getElementById('message').value.trim();
+
+        if (name.length < 2) {
+            alert("Imię musi mieć co najmniej 2 znaki");
+            return;
+        }
+
+        if (message.length < 5) {
+            alert("Wiadomość jest za krótka");
+            return;
+        }
+
+        let captcha = grecaptcha.getResponse();
+        if (!captcha) {
+            alert("Potwierdź, że nie jesteś robotem");
+            return;
+        }
+
+        alert("Formularz poprawny i wysłany!");
     });
 }
 
@@ -150,8 +169,6 @@ window.onpopstate = popStateHandler;
 
 function popStateHandler() {
     let loc = window.location.href.toString().split(window.location.host)[1];
-
-    console.log(loc);    
 
     if (loc === pageUrls.contact) { RenderContactPage(); }
     if (loc === pageUrls.about) { RenderAboutPage(); }
