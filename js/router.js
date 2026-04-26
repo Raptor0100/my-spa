@@ -151,6 +151,8 @@ window.onpopstate = popStateHandler;
 function popStateHandler() {
     let loc = window.location.href.toString().split(window.location.host)[1];
 
+    console.log(loc);    
+
     if (loc === pageUrls.contact) { RenderContactPage(); }
     if (loc === pageUrls.about) { RenderAboutPage(); }
     if (loc === pageUrls.gallery) { RenderGalleryPage();}
