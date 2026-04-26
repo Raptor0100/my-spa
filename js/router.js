@@ -1,7 +1,7 @@
 let pageUrls = {
-    about: '/raptor0100.github.io/my-spa/?about',
-    contact: 'raptor0100.github.io/my-spa/?contact',
-    gallery: 'raptor0100.github.io/my-spa/?gallery'
+    about: '/my-spa/?about',
+    contact: '/my-spa/?contact',
+    gallery: '/my-spa/?gallery'
 };
 
 function OnStartUp() {
